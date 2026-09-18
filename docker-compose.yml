@@ -1,0 +1,32 @@
+services:
+  api:
+    build: .
+    image: scan-upload-api
+    ports:
+      # Host port is overridable: API_PORT=9000 docker compose up api
+      - "${API_PORT:-8000}:8000"
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - upload_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    restart: unless-stopped
+
+  verify:
+    image: scan-upload-api
+    build: .
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_BASE_URL: http://api:8000
+    command: ["python", "-m", "verify"]
+    restart: "no"
+
+volumes:
+  upload_data:

@@ -2,3 +2,19 @@
 .env
 node_modules/
 __pycache__/
+
+# Python
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime artifacts (uploaded chunks, published artifacts, SQLite state)
+data/
+*.db
+*.db-wal
+*.db-shm
+*.part
+*.tmp
